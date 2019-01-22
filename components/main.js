@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import Camera from "./camera"
+import CameraEx from "./camera"
 import Functionality from "./functionality"
 
 export default class Main extends React.Component {
   render() {
     return (
-      <View>
+      <View style={{ width: "100%"}}>
         <Text style={styles.heading}>MurMur</Text>
-        <Camera />
-        <Functionality />        
-      </View>
+        <CameraEx />
+        {/* <Functionality />         */}
+      </View> 
     );
   }
 }
