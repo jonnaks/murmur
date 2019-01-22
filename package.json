@@ -16,12 +16,9 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
+    "jshint": "^2.9.7",
     "precommit-hook": "^3.0.0"
   },
-  "private": true,
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test"
-  ]
+  "jshintConfig": ".jshintrc",
+  "private": true
 }
