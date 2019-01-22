@@ -10,3 +10,8 @@ export default class Camera extends React.Component {
   }
 }
 
+const styles = StyleSheet.create({
+  cameraViewer: {
+    alignSelf: 'stretch'
+  }
+});
