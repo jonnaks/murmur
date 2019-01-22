@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions } from 'expo';
 
 export default class CameraEx extends React.Component {
@@ -11,9 +11,9 @@ export default class CameraEx extends React.Component {
   };
 
   async componentDidMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const {status} = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
-    if (hasCameraPermission){
+    if (status === 'granted'){
       let audioResponse = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
       if (audioResponse.status == 'granted'){
         this.setState({ permissionsGranted: true });
@@ -22,7 +22,6 @@ export default class CameraEx extends React.Component {
   }; 
   
   takeFilm(){    
-    let self = this;
     if (this.camera){
       this.camera.recordAsync().then(data => alert("DONE"));
     }    
@@ -31,7 +30,7 @@ export default class CameraEx extends React.Component {
   render() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
-      return <Text>No access to camera, null</Text>;;
+      return <Text>No access to camera, null</Text>;
     } else if (hasCameraPermission === false) {
       return <Text>No access to camera</Text>;
     } else {
