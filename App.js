@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import CameraEx from './components/camera';
+import Main from './components/main';
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <CameraEx />
+        <Main />
       </View>
     );
   }
@@ -16,8 +16,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    backgroundColor: '#944bbb',
+    paddingHorizontal: 24,
+    paddingVertical: 34
+  }
 });
