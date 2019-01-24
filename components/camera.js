@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image, CameraRoll, PixelRatio } from 'react-native';
-import { Camera, Permissions, ImagePicker, ScrollView } from 'expo';
+import { Camera, Permissions, ImagePicker, ScrollView, LinearGradient } from 'expo';
 import { filter} from 'lodash'
 import { Button } from 'react-native-elements';
 const Clarifai = require('clarifai');
@@ -160,30 +160,35 @@ export default class CameraEx extends React.Component {
                     {' '}Flip{' '}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    width:"20%",
-                    height:"10%",
-                    alignSelf: 'flex-end',
-                    alignItems: 'center',
-                    width:"60%",
-                    borderColor:"white",
-                    borderWidth: 1,
-                    borderRadius: 50,
-                    position:"absolute",
-                    bottom:"5%",
-                    left:"20%"
-                  }}
-                  onPress={() => {
-                    this.takeFilm();
-                  }}>
+                <LinearGradient  
+                colors={['transparent', 'rgba(148,75,187, 0.3)', 'rgba(148,75,187, 0.7)', 'rgba(148,75,187, 1)']}
+                style={{height:"50%", width:"100%", position:"absolute", bottom:"0%"}}>
+                  <TouchableOpacity
+                    style={{
+                      width:"20%",
+                      height:"20%",
+                      alignSelf: 'flex-end',
+                      alignItems: 'center',
+                      width:"60%",
+                      borderColor:"white",
+                      borderWidth: 1,
+                      borderRadius: 50,
+                      position:"absolute",
+                      bottom:"5%",
+                      left:"20%"
+                    }}
+                    onPress={() => {
+                      this.takeFilm();
+                    }}>
                   <Text
                     style={{ fontSize: 18, color: 'white', flex: 1,
                     margin:"8%"}}>
                     {' '}Take photo{' '}
                   </Text>
                 </TouchableOpacity>
+              </LinearGradient>
               </View>
+              
             </Camera> : 
             (this.state.loading) ? null : 
             <View ref={ref=> this.photo = ref } style={{ width: "100%", height:"95%" }}>

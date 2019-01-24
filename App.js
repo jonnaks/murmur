@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: '#944bbb',
-    paddingHorizontal: 24,
     paddingVertical: 34
   }
 });
