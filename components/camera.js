@@ -163,7 +163,7 @@ export default class CameraEx extends React.Component {
                 <TouchableOpacity
                   style={{
                     width:"20%",
-                    height:"15%",
+                    height:"10%",
                     alignSelf: 'flex-end',
                     alignItems: 'center',
                     width:"60%",
@@ -172,18 +172,14 @@ export default class CameraEx extends React.Component {
                     borderRadius: 50,
                     position:"absolute",
                     bottom:"5%",
-                    left:"20%",
-                    display: "flex",
-                    justifyContent: 'center',   
-                    flex:1,
-                    padding:"auto"
+                    left:"20%"
                   }}
                   onPress={() => {
                     this.takeFilm();
                   }}>
                   <Text
                     style={{ fontSize: 18, color: 'white', flex: 1,
-                    margin:"15%"}}>
+                    margin:"8%"}}>
                     {' '}Take photo{' '}
                   </Text>
                 </TouchableOpacity>
@@ -196,11 +192,14 @@ export default class CameraEx extends React.Component {
                   height:"100%",
                   width:"100%"}}>
               </Image>
-              <Text style={{height:"20%", width:"100%", position:"absolute", bottom:"20%"}}>{this.state.quote}</Text>
+              <View style={{height:"auto", width:"100%", position:"absolute", bottom:"20%", marginLeft:"5%", marginRight:"20%", paddingRight:"5%", paddingLeft:"5%", paddingTop:"3%", paddingBottom:"3%", backgroundColor:"black",opacity:0.7, borderRadius:40}}>
+                <Text style={{color:"white", opacity:1, fontSize:15}}>{this.state.quote}</Text>
+              </View>
+              
               <TouchableOpacity
                   style={{
                     width:"20%",
-                    height:"15%",
+                    height:"10%",
                     alignSelf: 'flex-end',
                     alignItems: 'center',
                     width:"60%",
@@ -216,7 +215,7 @@ export default class CameraEx extends React.Component {
                   }}>
                   <Text
                     style={{ fontSize: 18, color: 'white', flex: 1,
-                    margin:"15%" }}>
+                    margin:"8%" }}>
                     {' '}Retake photo{' '}
                   </Text>
                 </TouchableOpacity>
