@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, CameraRoll, PixelRatio, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, Image, CameraRoll, PixelRatio, StyleSheet, ActivityIndicator } from 'react-native';
 import { Camera, Permissions, ImagePicker, ScrollView, LinearGradient, takeSnapshotAsync } from 'expo';
 import { filter} from 'lodash'
 import { Button } from 'react-native-elements';
+import { loadingQuotes } from '../assets/loadingQuotes';
 const Clarifai = require('clarifai');
 
 export default class CameraEx extends React.Component {
@@ -13,12 +14,16 @@ export default class CameraEx extends React.Component {
     bcolor: "red",
     imageUri: "",
     quote: "",
-    loading: false
+    loading: false,
+    loadingQuote: "",
+    loadingQuoteTimeout: null,
+    loadingQuoteSequence: [0,1,2,3,4],
+    loadingQuoteIndex: 0
   };
 
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    const { statusCamera } = await Permissions.askAsync(Permissions.CAMERA_ROLL);  
+    const { statusCamera } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted' && statusCamera === 'granted'){
       this.setState({ hasCameraPermission: status === 'granted' });
     } else {
@@ -37,8 +42,8 @@ export default class CameraEx extends React.Component {
     formData.append('lang', 'en');
     return fetch(url, {
         method: "POST",
-        mode: "cors", 
-        body: formData, 
+        mode: "cors",
+        body: formData,
     })
     .then(response => {
       return response.json();
@@ -56,15 +61,48 @@ export default class CameraEx extends React.Component {
       return response;
     });
   };
-  
-  takeFilm(){    
+
+  setLoadingQuoteTimout() {
+    this.setState({loadingQuoteSequence: this.shuffle(Array.from(Array(loadingQuotes.length).keys()))});
+    this.setState({loadingQuotesIndex: 0});
+    const timeout = setInterval(() => {
+      if(this.state.loadingQuoteIndex < (loadingQuotes.length - 1)) {
+        this.setState({loadingQuoteIndex: (this.state.loadingQuoteIndex + 1)});
+      }
+      const loadingQuote = this.getLoadingQuote(this.state.loadingQuoteSequence[this.state.loadingQuoteIndex]);
+      console.log(loadingQuote);
+      console.log(this.state.loadingQuoteSequence[this.state.loadingQuoteIndex]);
+      console.log(this.state.loadingQuoteIndex);
+      console.log(loadingQuotes);
+      this.setState({loadingQuote: loadingQuote})
+    }, 2000);
+    this.setState({loadingQuoteTimeout: timeout});
+  }
+  destroyLoadingQuoteTimeout() {
+    clearInterval(this.state.loadingQuoteTimeout);
+    this.setState({loadingQuoteTimeout: null});
+    this.setState({loadingQuoteSequence: this.shuffle(Array.from(Array(loadingQuotes.length).keys()))});
+    this.setState({loadingQuotesIndex: 0});
+    this.setState({loadingQuote: ""});
+  }
+
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  takeFilm(){
     if (this.camera){
       this.setState({ loading: true });
+      this.setLoadingQuoteTimout();
       this.camera.takePictureAsync({ base64: true }).then(data => {
       let self = this;
-      
+
       // Instantiate a new Clarifai app by passing in your API key.
-      const app = new Clarifai.App({apiKey: '4e0cbc5cea174b859b3daa4de3dcf47c'});
+      const app = new Clarifai.App({apiKey: 'e24a91041aae4be2bb0876443bdbec6f'});
 
       this.setState({ imageUri: data.uri });
 
@@ -88,18 +126,21 @@ export default class CameraEx extends React.Component {
               const res = JSON.parse(json["_bodyInit"])
               self.setState({ imageUri: res[0]["url"] });
               self.setState({ loading: false });
+              self.destroyLoadingQuoteTimeout();
             })
             .catch(error => console.error("Error3", error));
           } else {
             self.setState({ loading: false });
+            self.destroyLoadingQuoteTimeout();
           }
-           
+
         })
         .catch(err => {
-          console.log("ERR2", err.status)
+          console.log("ERR2", JSON.stringify(err));
+          this.setState({loading: false});
         });
       });
-    }    
+    }
   };
 
   async takeSnapshot() {
@@ -124,6 +165,10 @@ export default class CameraEx extends React.Component {
     this.setState({ imageUri: "" });
   }
 
+  getLoadingQuote(index) {
+    return loadingQuotes[index];
+  }
+
   render() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
@@ -133,7 +178,7 @@ export default class CameraEx extends React.Component {
     } else {
       return (
         <View style={{ backgroundColor:"transperant", width:"100%"}}>
-          { (!this.state.imageUri) ?           
+          { (!this.state.imageUri) ?
             <Camera ref={ref=> this.camera = ref } style={{ width: "100%", height:"95%" }} type={this.state.type}>
               <View
                 style={{
@@ -162,7 +207,7 @@ export default class CameraEx extends React.Component {
                     {' '}Flip{' '}
                   </Text>
                 </TouchableOpacity>
-                <LinearGradient  
+                <LinearGradient
                 colors={['transparent', 'rgba(148,75,187, 0.3)', 'rgba(148,75,187, 0.7)', 'rgba(148,75,187, 1)']}
                 style={{height:"50%", width:"100%", position:"absolute", bottom:"0%"}}>
                   <TouchableOpacity
@@ -190,17 +235,29 @@ export default class CameraEx extends React.Component {
                 </TouchableOpacity>
               </LinearGradient>
               </View>
-              
-            </Camera> : 
-            (this.state.loading) ? null : 
+
+            </Camera> :
+            (this.state.loading) ?
+            <Camera ref={ref=> this.camera = ref } style={{ width: "100%", height:"95%" }} type={this.state.type}>
+              <LinearGradient
+              colors={['transparent', 'rgba(148,75,187, 0.3)', 'rgba(148,75,187, 0.7)', 'rgba(148,75,187, 1)']}
+              style={{height:"50%", width:"100%", position:"absolute", bottom:"0%"}}>
+              </LinearGradient>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#ffffff" />
+                <View style={{height:"20%", width:"100%", position:"absolute", bottom:"0%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{color:"white", opacity:1, fontSize:15}}>{ this.state.loadingQuote }</Text>
+                </View>
+              </View>
+            </Camera> :
             <View>
               <View ref={ref=> this.photo = ref } style={{ width: "100%", height:"95%" }}>
-                <Image source={{ uri: this.state.imageUri }} 
+                <Image source={{ uri: this.state.imageUri }}
                   style={{
                     height:"100%",
                     width:"100%"}}>
                 </Image>
-                <View style={{height:"auto", width:"100%", position:"absolute", bottom:"22%", marginLeft:"5%", marginRight:"20%", paddingRight:"5%", paddingLeft:"5%", paddingTop:"3%", paddingBottom:"3%", backgroundColor:"black",opacity:0.7, borderRadius:40}}>
+                <View style={{height:"auto", width:"100%", position:"absolute", bottom:"20%", marginLeft:"5%", marginRight:"20%", paddingRight:"5%", paddingLeft:"5%", paddingTop:"3%", paddingBottom:"3%", backgroundColor:"black",opacity:0.7, borderRadius:40}}>
                   <Text style={{color:"white", opacity:1, fontSize:15}}>{this.state.quote}</Text>
                 </View>
               </View>
