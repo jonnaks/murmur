@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, CameraRoll, PixelRatio } from 'react-native';
-import { Camera, Permissions, ImagePicker, ScrollView, LinearGradient } from 'expo';
+import { Text, View, TouchableOpacity, Image, CameraRoll, PixelRatio, StyleSheet } from 'react-native';
+import { Camera, Permissions, ImagePicker, ScrollView, LinearGradient, takeSnapshotAsync } from 'expo';
 import { filter} from 'lodash'
 import { Button } from 'react-native-elements';
 const Clarifai = require('clarifai');
@@ -27,6 +27,7 @@ export default class CameraEx extends React.Component {
       this.setState({ hasCameraPermission: status === 'granted' });
     }
   }; 
+
   postData() {
     const url = "https://forismatic.com/api/1.0/"
     let formData = new FormData();
@@ -97,7 +98,6 @@ export default class CameraEx extends React.Component {
         .catch(err => {
           console.log("ERR2", err.status)
         });
-        
       });
     }    
   };
@@ -108,13 +108,15 @@ export default class CameraEx extends React.Component {
     const pixels = targetPixelCount / pixelRatio;
     if(this.photo) {
       const result = await takeSnapshotAsync(this.photo, {
-        result: 'file',
+        result: "file",
         height: pixels,
         width: pixels,
         quality: 1,
-        format: 'png',
-      });
-      console.log("Result", result);
+        format: "png",
+      });            
+      if(result){
+        CameraRoll.saveToCameraRoll(result);
+      }
     }
   };
 
@@ -191,30 +193,19 @@ export default class CameraEx extends React.Component {
               
             </Camera> : 
             (this.state.loading) ? null : 
-            <View ref={ref=> this.photo = ref } style={{ width: "100%", height:"95%" }}>
-              <Image source={{ uri: this.state.imageUri }} 
-                style={{
-                  height:"100%",
-                  width:"100%"}}>
-              </Image>
-              <View style={{height:"auto", width:"100%", position:"absolute", bottom:"20%", marginLeft:"5%", marginRight:"20%", paddingRight:"5%", paddingLeft:"5%", paddingTop:"3%", paddingBottom:"3%", backgroundColor:"black",opacity:0.7, borderRadius:40}}>
-                <Text style={{color:"white", opacity:1, fontSize:15}}>{this.state.quote}</Text>
-              </View>
-              
-              <TouchableOpacity
+            <View>
+              <View ref={ref=> this.photo = ref } style={{ width: "100%", height:"95%" }}>
+                <Image source={{ uri: this.state.imageUri }} 
                   style={{
-                    width:"20%",
-                    height:"10%",
-                    alignSelf: 'flex-end',
-                    alignItems: 'center',
-                    width:"60%",
-                    borderColor:"white",
-                    borderWidth: 1,
-                    borderRadius: 50,
-                    position:"absolute",
-                    bottom:"5%",
-                    left:"20%"
-                  }}
+                    height:"100%",
+                    width:"100%"}}>
+                </Image>
+                <View style={{height:"auto", width:"100%", position:"absolute", bottom:"22%", marginLeft:"5%", marginRight:"20%", paddingRight:"5%", paddingLeft:"5%", paddingTop:"3%", paddingBottom:"3%", backgroundColor:"black",opacity:0.7, borderRadius:40}}>
+                  <Text style={{color:"white", opacity:1, fontSize:15}}>{this.state.quote}</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                  style={[styles.button, {bottom:"14%"}]}
                   onPress={() => {
                     this.retakePhoto();
                   }}>
@@ -224,7 +215,19 @@ export default class CameraEx extends React.Component {
                     {' '}Retake photo{' '}
                   </Text>
                 </TouchableOpacity>
-            </View>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    this.takeSnapshot();
+                  }}>
+                  <Text
+                    style={{ fontSize: 18, color: 'white', flex: 1,
+                    margin:"8%" }}>
+                    {' '}Save photo{' '}
+                  </Text>
+                </TouchableOpacity>
+              </View>
           }
         </View>
       );
@@ -232,3 +235,18 @@ export default class CameraEx extends React.Component {
   }
 }
 
+const styles = StyleSheet.create({
+  button: {
+    width:"20%",
+    height:"10%",
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    width:"60%",
+    borderColor:"white",
+    borderWidth: 1,
+    borderRadius: 50,
+    position:"absolute",
+    bottom:"2%",
+    left:"20%"
+  }
+});

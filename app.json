@@ -13,6 +13,7 @@
     "icon": "./assets/icon.png",
     "splash": {
       "backgroundColor": "#944bbb",
+      "image": "./assets/murmur_dead_splash.png",
       "resizeMode": "contain"
     },
     "updates": {
