@@ -118,6 +118,10 @@ export default class CameraEx extends React.Component {
     }
   };
 
+  retakePhoto() {
+    this.setState({ imageUri: "" });
+  }
+
   render() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
@@ -126,9 +130,9 @@ export default class CameraEx extends React.Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View style={{ backgroundColor:"red", width:"100%"}}>
+        <View style={{ backgroundColor:"transperant", width:"100%"}}>
           { (!this.state.imageUri) ?           
-            <Camera ref={ref=> this.camera = ref } style={{ width: "100%", height:"90%" }} type={this.state.type}>
+            <Camera ref={ref=> this.camera = ref } style={{ width: "100%", height:"95%" }} type={this.state.type}>
               <View
                 style={{
                   flex: 1,
@@ -140,9 +144,9 @@ export default class CameraEx extends React.Component {
                   style={{
                     width:"20%",
                     height:"20%",
-                    alignSelf: 'flex-end',
+                    alignSelf: 'flex-start',
                     alignItems: 'center',
-                    color: 'black'
+                    marginTop:"5%",
                   }}
                   onPress={() => {
                     this.setState({
@@ -159,45 +163,61 @@ export default class CameraEx extends React.Component {
                 <TouchableOpacity
                   style={{
                     width:"20%",
-                    height:"20%",
+                    height:"15%",
                     alignSelf: 'flex-end',
                     alignItems: 'center',
-                    backgroundColor:this.state.bcolor, 
+                    width:"60%",
+                    borderColor:"white",
+                    borderWidth: 1,
+                    borderRadius: 50,
+                    position:"absolute",
+                    bottom:"5%",
+                    left:"20%",
+                    display: "flex",
+                    justifyContent: 'center',   
+                    flex:1,
+                    padding:"auto"
                   }}
                   onPress={() => {
                     this.takeFilm();
                   }}>
                   <Text
-                    style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-                    {' '}Record{' '}
+                    style={{ fontSize: 18, color: 'white', flex: 1,
+                    margin:"15%"}}>
+                    {' '}Take photo{' '}
                   </Text>
                 </TouchableOpacity>
               </View>
             </Camera> : 
             (this.state.loading) ? null : 
-            <View ref={ref=> this.photo = ref }>
+            <View ref={ref=> this.photo = ref } style={{ width: "100%", height:"95%" }}>
               <Image source={{ uri: this.state.imageUri }} 
                 style={{
-                  height:"80%",
+                  height:"100%",
                   width:"100%"}}>
               </Image>
-              <Text style={{height:"20%", width:"100%", position:"absolute", bottom:"10%"}}>{this.state.quote}</Text>
-
-             
+              <Text style={{height:"20%", width:"100%", position:"absolute", bottom:"20%"}}>{this.state.quote}</Text>
               <TouchableOpacity
                   style={{
                     width:"20%",
-                    height:"20%",
+                    height:"15%",
                     alignSelf: 'flex-end',
                     alignItems: 'center',
-                    backgroundColor:"Green", 
+                    width:"60%",
+                    borderColor:"white",
+                    borderWidth: 1,
+                    borderRadius: 50,
+                    position:"absolute",
+                    bottom:"5%",
+                    left:"20%"
                   }}
                   onPress={() => {
-                    this.takeSnapshot();
+                    this.retakePhoto();
                   }}>
                   <Text
-                    style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-                    {' '}Save{' '}
+                    style={{ fontSize: 18, color: 'white', flex: 1,
+                    margin:"15%" }}>
+                    {' '}Retake photo{' '}
                   </Text>
                 </TouchableOpacity>
             </View>
