@@ -9,7 +9,13 @@
     "validate": "npm ls"
   },
   "dependencies": {
+    "base64-img": "^1.0.4",
+    "canvas": "^2.3.1",
+    "clarifai": "^2.9.0",
     "expo": "^32.0.0",
+    "image-to-base64": "^2.0.1",
+    "kittydar": "^1.0.0",
+    "lodash": "^4.17.11",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-camera": "^1.9.0",

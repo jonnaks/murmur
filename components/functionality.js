@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+// import { Button } from 'react-native-elements';
+// import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -9,7 +9,7 @@ export default class Functionality extends React.Component {
   render() {
     return (
       <View>
-        <Button
+        {/* <Button
         style={styles.button}
         icon={
           <Icon
@@ -18,7 +18,7 @@ export default class Functionality extends React.Component {
           color="#ccc"
           size={25}/>
         }
-        />
+        /> */}
       </View>
     );
   }
